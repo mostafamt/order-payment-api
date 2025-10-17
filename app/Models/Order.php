@@ -37,7 +37,6 @@ class Order extends Model
             return $i->quantity * $i->unit_price;
         });
 
-
         $this->total = $total;
         $this->save();
     }
