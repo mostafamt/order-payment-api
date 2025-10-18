@@ -27,6 +27,13 @@ class OrderController extends Controller
             'user_id' => auth()->id(),
             'status' => 'pending',
             'notes' => $data['notes'] ?? null,
+            'shipping_name' => $data['shipping_name'] ?? null,
+            'shipping_phone' => $data['shipping_phone'] ?? null,
+            'shipping_address' => $data['shipping_address'] ?? null,
+            'shipping_city' => $data['shipping_city'] ?? null,
+            'shipping_province' => $data['shipping_province'] ?? null,
+            'shipping_postal_code' => $data['shipping_postal_code'] ?? null,
+            'shipping_country' => $data['shipping_country'] ?? null,
         ]);
 
         foreach ($data['items'] as $item) {
@@ -85,6 +92,27 @@ class OrderController extends Controller
                 ]);
             }
             $order->recalculateTotal();
+        }
+
+        // Update shipping fields if provided
+        $shippingFields = [
+            'shipping_name',
+            'shipping_phone',
+            'shipping_address',
+            'shipping_city',
+            'shipping_province',
+            'shipping_postal_code',
+            'shipping_country',
+        ];
+
+        foreach ($shippingFields as $field) {
+            if (isset($data[$field])) {
+                $order->$field = $data[$field];
+            }
+        }
+
+        if (count(array_intersect_key($data, array_flip($shippingFields))) > 0) {
+            $order->save();
         }
 
         return response()->json(['success' => true, 'data' => $order]);

@@ -9,7 +9,19 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'status', 'total', 'notes'];
+    protected $fillable = [
+        'user_id',
+        'status',
+        'total',
+        'notes',
+        'shipping_name',
+        'shipping_phone',
+        'shipping_address',
+        'shipping_city',
+        'shipping_province',
+        'shipping_postal_code',
+        'shipping_country',
+    ];
 
     protected $attributes = [
         'status' => 'pending',

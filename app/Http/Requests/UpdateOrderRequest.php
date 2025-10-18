@@ -19,6 +19,13 @@ class UpdateOrderRequest extends FormRequest
             'items.*.quantity' => 'required_with:items|integer|min:1',
             'items.*.price' => 'required_with:items|numeric|min:0',
             'status' => 'sometimes|in:pending,confirmed,cancelled',
+            'shipping_name' => 'sometimes|string|max:255',
+            'shipping_phone' => 'sometimes|string|max:20',
+            'shipping_address' => 'sometimes|string|max:500',
+            'shipping_city' => 'sometimes|string|max:100',
+            'shipping_province' => 'sometimes|string|max:100',
+            'shipping_postal_code' => 'sometimes|string|max:20',
+            'shipping_country' => 'sometimes|string|max:100',
         ];
     }
 
@@ -42,6 +49,20 @@ class UpdateOrderRequest extends FormRequest
             'items.*.price.numeric' => 'Price must be a valid number',
             'items.*.price.min' => 'Price cannot be negative',
             'status.in' => 'Status must be one of: pending, confirmed, or cancelled',
+            'shipping_name.string' => 'Shipping name must be a string',
+            'shipping_name.max' => 'Shipping name cannot exceed 255 characters',
+            'shipping_phone.string' => 'Shipping phone must be a string',
+            'shipping_phone.max' => 'Shipping phone cannot exceed 20 characters',
+            'shipping_address.string' => 'Shipping address must be a string',
+            'shipping_address.max' => 'Shipping address cannot exceed 500 characters',
+            'shipping_city.string' => 'Shipping city must be a string',
+            'shipping_city.max' => 'Shipping city cannot exceed 100 characters',
+            'shipping_province.string' => 'Shipping province must be a string',
+            'shipping_province.max' => 'Shipping province cannot exceed 100 characters',
+            'shipping_postal_code.string' => 'Shipping postal code must be a string',
+            'shipping_postal_code.max' => 'Shipping postal code cannot exceed 20 characters',
+            'shipping_country.string' => 'Shipping country must be a string',
+            'shipping_country.max' => 'Shipping country cannot exceed 100 characters',
         ];
     }
 }

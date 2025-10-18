@@ -203,9 +203,18 @@ Content-Type: application/json
       "price": 25.00
     }
   ],
-  "notes": "Special delivery instructions"
+  "notes": "Special delivery instructions",
+  "shipping_name": "John Doe",
+  "shipping_phone": "+1234567890",
+  "shipping_address": "123 Main Street, Apt 4B",
+  "shipping_city": "New York",
+  "shipping_province": "NY",
+  "shipping_postal_code": "10001",
+  "shipping_country": "USA"
 }
 ```
+
+**Note:** All shipping fields are optional.
 
 **Response (201):**
 ```json
@@ -275,9 +284,18 @@ Content-Type: application/json
       "quantity": 3,
       "price": 100.00
     }
-  ]
+  ],
+  "shipping_name": "Jane Doe",
+  "shipping_phone": "+1987654321",
+  "shipping_address": "456 Oak Avenue",
+  "shipping_city": "Los Angeles",
+  "shipping_province": "CA",
+  "shipping_postal_code": "90001",
+  "shipping_country": "USA"
 }
 ```
+
+**Note:** All fields are optional in the update request. You can update status, items, shipping information, or any combination of these fields.
 
 #### Delete Order
 ```http
@@ -648,6 +666,13 @@ orders
 ├── status (pending|confirmed|cancelled)
 ├── total
 ├── notes
+├── shipping_name
+├── shipping_phone
+├── shipping_address
+├── shipping_city
+├── shipping_province
+├── shipping_postal_code
+├── shipping_country
 └── timestamps
 
 order_items
