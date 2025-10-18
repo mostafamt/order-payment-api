@@ -23,7 +23,11 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request)
     {
         $data = $request->validated();
-        $order = Order::create(['user_id' => auth()->id(), 'notes' => $data['notes'] ?? null]);
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'status' => 'pending',
+            'notes' => $data['notes'] ?? null,
+        ]);
 
         foreach ($data['items'] as $item) {
             $lineTotal = $item['quantity'] * $item['price'];
