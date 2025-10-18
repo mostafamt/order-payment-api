@@ -11,6 +11,11 @@ class Order extends Model
 
     protected $fillable = ['user_id', 'status', 'total', 'notes'];
 
+    protected $attributes = [
+        'status' => 'pending',
+        'total' => 0,
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
