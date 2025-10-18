@@ -16,15 +16,14 @@ class OrderController extends Controller
             $query->where('status', $request->query('status'));
         }
         $orders = $query->paginate(15);
+
         return response()->json(['success' => true, 'data' => $orders]);
     }
-
 
     public function store(StoreOrderRequest $request)
     {
         $data = $request->validated();
         $order = Order::create(['user_id' => auth()->id(), 'notes' => $data['notes'] ?? null]);
-
 
         foreach ($data['items'] as $item) {
             $lineTotal = $item['quantity'] * $item['price'];
@@ -41,26 +40,23 @@ class OrderController extends Controller
         return response()->json(['success' => true, 'data' => $order], 201);
     }
 
-
     public function show(Order $order)
     {
         $this->authorize('view', $order);
         $order->load('items', 'payments');
+
         return response()->json(['success' => true, 'data' => $order]);
     }
 
-
     public function update(UpdateOrderRequest $request, Order $order)
     {
-        // $this->authorize('update', $order);
+        $this->authorize('update', $order);
         $data = $request->validated();
-
 
         if (isset($data['status'])) {
             $order->status = $data['status'];
             $order->save();
         }
-
 
         if (isset($data['items'])) {
             // simple approach: delete & recreate
@@ -77,10 +73,8 @@ class OrderController extends Controller
             $order->recalculateTotal();
         }
 
-
         return response()->json(['success' => true, 'data' => $order]);
     }
-
 
     public function destroy(Order $order)
     {
@@ -89,6 +83,7 @@ class OrderController extends Controller
             return response()->json(['success' => false, 'message' => 'Cannot delete order with payments'], 400);
         }
         $order->delete();
+
         return response()->json(['success' => true], 204);
     }
 }

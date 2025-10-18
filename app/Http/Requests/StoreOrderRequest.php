@@ -10,7 +10,7 @@ class StoreOrderRequest extends FormRequest
     {
         return true;
     }
-    
+
     public function rules()
     {
         return [
@@ -18,7 +18,7 @@ class StoreOrderRequest extends FormRequest
             'items.*.product_name' => 'required|string|max:255',
             'items.*.quantity' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
-            'notes' => 'nullable|string|max:1000', 
+            'notes' => 'nullable|string|max:1000',
         ];
     }
 }

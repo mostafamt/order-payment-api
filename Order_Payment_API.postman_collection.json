@@ -1,0 +1,790 @@
+{
+  "info": {
+    "name": "Order & Payment Management API",
+    "_postman_id": "order-payment-api-v1",
+    "description": "Complete API collection for Order and Payment Management System with JWT authentication",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "order_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "payment_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('jwt_token', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/register",
+              "host": ["{{base_url}}"],
+              "path": ["register"]
+            },
+            "description": "Register a new user and receive JWT token"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/register",
+                  "host": ["{{base_url}}"],
+                  "path": ["register"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"message\": \"User registered successfully\",\n    \"user\": {\n        \"id\": 1,\n        \"name\": \"John Doe\",\n        \"email\": \"john@example.com\",\n        \"created_at\": \"2025-10-18T10:00:00.000000Z\",\n        \"updated_at\": \"2025-10-18T10:00:00.000000Z\"\n    },\n    \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGci...\"\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"invalid-email\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/register",
+                  "host": ["{{base_url}}"],
+                  "path": ["register"]
+                }
+              },
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"message\": \"The given data was invalid.\",\n    \"errors\": {\n        \"email\": [\"The email must be a valid email address.\"],\n        \"password\": [\"The password field is required.\"]\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('jwt_token', jsonData.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            },
+            "description": "Login with email and password to receive JWT token"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/login",
+                  "host": ["{{base_url}}"],
+                  "path": ["login"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGci...\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3600\n}"
+            },
+            {
+              "name": "Invalid Credentials",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"wrong_password\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/login",
+                  "host": ["{{base_url}}"],
+                  "path": ["login"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"error\": \"Invalid credentials\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/me",
+              "host": ["{{base_url}}"],
+              "path": ["me"]
+            },
+            "description": "Get currently authenticated user details"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": ["{{base_url}}"],
+              "path": ["logout"]
+            },
+            "description": "Logout and invalidate JWT token"
+          },
+          "response": []
+        }
+      ],
+      "description": "Authentication endpoints for user registration, login, and profile management"
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('order_id', jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"items\": [\n        {\n            \"product_name\": \"Laptop\",\n            \"quantity\": 1,\n            \"price\": 999.99\n        },\n        {\n            \"product_name\": \"Mouse\",\n            \"quantity\": 2,\n            \"price\": 25.50\n        }\n    ],\n    \"notes\": \"Please handle with care\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders",
+              "host": ["{{base_url}}"],
+              "path": ["orders"]
+            },
+            "description": "Create a new order with items. Total is automatically calculated."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"items\": [\n        {\n            \"product_name\": \"Laptop\",\n            \"quantity\": 1,\n            \"price\": 999.99\n        },\n        {\n            \"product_name\": \"Mouse\",\n            \"quantity\": 2,\n            \"price\": 25.50\n        }\n    ],\n    \"notes\": \"Please handle with care\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/orders",
+                  "host": ["{{base_url}}"],
+                  "path": ["orders"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"success\": true,\n    \"data\": {\n        \"id\": 1,\n        \"user_id\": 1,\n        \"status\": \"pending\",\n        \"total\": 1050.99,\n        \"notes\": \"Please handle with care\",\n        \"created_at\": \"2025-10-18T10:00:00.000000Z\",\n        \"updated_at\": \"2025-10-18T10:00:00.000000Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orders",
+              "host": ["{{base_url}}"],
+              "path": ["orders"]
+            },
+            "description": "Get all orders for authenticated user with pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders by Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orders?status=confirmed",
+              "host": ["{{base_url}}"],
+              "path": ["orders"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "confirmed",
+                  "description": "pending, confirmed, or cancelled"
+                }
+              ]
+            },
+            "description": "Filter orders by status"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "{{order_id}}"]
+            },
+            "description": "Get a single order with items and payments"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"confirmed\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "{{order_id}}"]
+            },
+            "description": "Update order status to pending, confirmed, or cancelled"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Items",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"items\": [\n        {\n            \"product_name\": \"Laptop\",\n            \"quantity\": 2,\n            \"price\": 899.99\n        }\n    ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "{{order_id}}"]
+            },
+            "description": "Update order items. Existing items are replaced."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["orders", "{{order_id}}"]
+            },
+            "description": "Delete an order (only if no payments exist)"
+          },
+          "response": [
+            {
+              "name": "Error - Order Has Payments",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/orders/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["orders", "1"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Cannot delete order with payments\"\n}"
+            }
+          ]
+        }
+      ],
+      "description": "Order management endpoints for creating, viewing, updating, and deleting orders"
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Process Credit Card Payment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('payment_id', jsonData.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"order_id\": {{order_id}},\n    \"method\": \"credit_card\",\n    \"payment_data\": {\n        \"card_number\": \"4111111111111111\",\n        \"cvv\": \"123\",\n        \"expiry_date\": \"12/25\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments/process",
+              "host": ["{{base_url}}"],
+              "path": ["payments", "process"]
+            },
+            "description": "Process a credit card payment. Note: Order must be in 'confirmed' status."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"order_id\": 1,\n    \"method\": \"credit_card\",\n    \"payment_data\": {\n        \"card_number\": \"4111111111111111\",\n        \"cvv\": \"123\",\n        \"expiry_date\": \"12/25\"\n    }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/payments/process",
+                  "host": ["{{base_url}}"],
+                  "path": ["payments", "process"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"success\": true,\n    \"message\": \"Payment processed successfully via Credit Card\",\n    \"data\": {\n        \"id\": 1,\n        \"payment_id\": \"CC-XYZABC123456\",\n        \"order_id\": 1,\n        \"method\": \"credit_card\",\n        \"status\": \"successful\",\n        \"amount\": 1050.99,\n        \"meta\": {\n            \"message\": \"Payment processed successfully via Credit Card\",\n            \"transaction_details\": {\n                \"card_last_four\": \"1111\",\n                \"gateway\": \"credit_card\",\n                \"processed_at\": \"2025-10-18T10:05:00+00:00\"\n            }\n        },\n        \"created_at\": \"2025-10-18T10:05:00.000000Z\",\n        \"updated_at\": \"2025-10-18T10:05:00.000000Z\"\n    }\n}"
+            },
+            {
+              "name": "Error - Order Not Confirmed",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"order_id\": 1,\n    \"method\": \"credit_card\",\n    \"payment_data\": {\n        \"card_number\": \"4111111111111111\",\n        \"cvv\": \"123\"\n    }\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/payments/process",
+                  "host": ["{{base_url}}"],
+                  "path": ["payments", "process"]
+                }
+              },
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n    \"success\": false,\n    \"message\": \"Payments can only be processed for orders with confirmed status\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Process PayPal Payment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"order_id\": {{order_id}},\n    \"method\": \"paypal\",\n    \"payment_data\": {\n        \"paypal_email\": \"user@example.com\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments/process",
+              "host": ["{{base_url}}"],
+              "path": ["payments", "process"]
+            },
+            "description": "Process a PayPal payment"
+          },
+          "response": []
+        },
+        {
+          "name": "Process Stripe Payment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"order_id\": {{order_id}},\n    \"method\": \"stripe\",\n    \"payment_data\": {\n        \"stripe_token\": \"tok_visa\"\n    }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments/process",
+              "host": ["{{base_url}}"],
+              "path": ["payments", "process"]
+            },
+            "description": "Process a Stripe payment"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Payments",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": ["{{base_url}}"],
+              "path": ["payments"]
+            },
+            "description": "Get all payments for authenticated user's orders"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Payments by Status",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/payments?status=successful",
+              "host": ["{{base_url}}"],
+              "path": ["payments"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "successful",
+                  "description": "pending, successful, or failed"
+                }
+              ]
+            },
+            "description": "Filter payments by status"
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Payments by Method",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/payments?method=credit_card",
+              "host": ["{{base_url}}"],
+              "path": ["payments"],
+              "query": [
+                {
+                  "key": "method",
+                  "value": "credit_card",
+                  "description": "credit_card, paypal, or stripe"
+                }
+              ]
+            },
+            "description": "Filter payments by payment method"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Payment",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwt_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/payments/{{payment_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["payments", "{{payment_id}}"]
+            },
+            "description": "Get a single payment with order details"
+          },
+          "response": []
+        }
+      ],
+      "description": "Payment processing endpoints for different payment gateways"
+    }
+  ]
+}

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -29,7 +29,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'User registered successfully',
             'user' => $user,
-            'token' => $token
+            'token' => $token,
         ]);
     }
 
@@ -47,6 +47,7 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
+
         return response()->json(['message' => 'Successfully logged out']);
     }
 
@@ -60,7 +61,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60
+            'expires_in' => Auth::factory()->getTTL() * 60,
         ]);
     }
 }
