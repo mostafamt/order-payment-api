@@ -22,7 +22,9 @@ class OrderTest extends TestCase
 
         // Create a user and get JWT token
         $this->user = User::factory()->create();
-        $this->token = auth()->login($this->user);
+        /** @var \Tymon\JWTAuth\JWTGuard $auth */
+        $auth = auth();
+        $this->token = $auth->login($this->user);
     }
 
     public function test_user_can_create_order()
