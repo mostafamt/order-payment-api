@@ -28,10 +28,10 @@ Route::middleware('auth:api')->group(function () {
 
     // --- Order Management ---
     Route::get('/orders', [OrderController::class, 'index']);            // list or filter by status
-    Route::get('/orders/{id}', [OrderController::class, 'show']);        // view single order
     Route::post('/orders', [OrderController::class, 'store']);           // create new order
-    Route::put('/orders/{id}', [OrderController::class, 'update']);      // update existing order
-    Route::delete('/orders/{id}', [OrderController::class, 'destroy']);  // delete order (if no payments)
+    Route::get('/orders/{order}', [OrderController::class, 'show']);        // view single order
+    Route::put('/orders/{order}', [OrderController::class, 'update']);      // update existing order
+    Route::delete('/orders/{order}', [OrderController::class, 'destroy']);  // delete order (if no payments)
 
     // --- Payment Management ---
     Route::get('/payments', [PaymentController::class, 'index']);         // list all payments

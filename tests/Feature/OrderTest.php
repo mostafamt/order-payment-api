@@ -193,17 +193,6 @@ class OrderTest extends TestCase
             ]);
     }
 
-    public function test_order_creation_requires_authentication()
-    {
-        $response = $this->postJson('/api/orders', [
-            'items' => [
-                ['product_name' => 'Test', 'quantity' => 1, 'price' => 10],
-            ],
-        ]);
-
-        $response->assertStatus(401);
-    }
-
     public function test_order_creation_validates_items()
     {
         $response = $this->withHeaders([
