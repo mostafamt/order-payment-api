@@ -193,6 +193,33 @@ class OrderTest extends TestCase
             ]);
     }
 
+    public function test_confirmed_order_with_payments_cannot_change_status()
+    {
+        $order = Order::factory()->create([
+            'user_id' => $this->user->id,
+            'status' => 'confirmed',
+        ]);
+        Payment::factory()->create(['order_id' => $order->id]);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer '.$this->token,
+        ])->putJson("/api/orders/{$order->id}", [
+            'status' => 'cancelled',
+        ]);
+
+        $response->assertStatus(400)
+            ->assertJson([
+                'success' => false,
+                'message' => 'Cannot change status of confirmed order with payments to pending or cancelled',
+            ]);
+
+        // Verify status didn't change
+        $this->assertDatabaseHas('orders', [
+            'id' => $order->id,
+            'status' => 'confirmed',
+        ]);
+    }
+
     public function test_order_creation_validates_items()
     {
         $response = $this->withHeaders([

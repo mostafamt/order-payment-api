@@ -58,6 +58,16 @@ class OrderController extends Controller
         $data = $request->validated();
 
         if (isset($data['status'])) {
+            // Business Rule: Orders with payments cannot be changed from confirmed to pending/cancelled
+            if ($order->status === 'confirmed' && $order->payments()->exists()) {
+                if (in_array($data['status'], ['pending', 'cancelled'])) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Cannot change status of confirmed order with payments to pending or cancelled',
+                    ], 400);
+                }
+            }
+
             $order->status = $data['status'];
             $order->save();
         }

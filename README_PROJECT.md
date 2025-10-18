@@ -615,16 +615,21 @@ Benefits:
    - Payments can only be processed for orders with `status = "confirmed"`
    - Payment records are created as `pending` first, then updated based on gateway response
 
-2. **Order Deletion**
+2. **Order Status Management**
+   - Confirmed orders with associated payments cannot be changed to `pending` or `cancelled`
+   - This prevents status manipulation after payment has been processed
+   - Returns 400 error if attempted
+
+3. **Order Deletion**
    - Orders cannot be deleted if they have associated payments
    - Enforced at the controller level
 
-3. **Authorization**
+4. **Authorization**
    - Users can only view, update, or delete their own orders
    - Users can only view payments for their own orders
    - Enforced via Laravel Policies
 
-4. **Order Total Calculation**
+5. **Order Total Calculation**
    - Automatically calculated from order items
    - Updated via `Order::recalculateTotal()` method
 
